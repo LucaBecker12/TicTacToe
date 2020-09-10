@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/gameHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/player1TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Player 1:"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/player1Score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/player1TV"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/player1TV"
+            android:text="0"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/player2TV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/player1TV"
+            android:layout_alignStart="@id/player1TV"
+            android:layout_marginTop="15dp"
+            android:text="Player 2:"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/player2Score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/player2TV"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/player2TV"
+            android:text="0"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/resetGameBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
+            android:text="@string/reset" />
+
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="302dp"
+        android:layout_height="302dp"
+        android:layout_marginTop="100dp"
+        android:background="@color/colorBlack"
+        android:padding="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gameHeader"
+        app:layout_constraintVertical_bias="0.2">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/a1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:tag="0,0" />
+
+            <ImageView
+                android:id="@+id/a2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginHorizontal="1dp"
+                android:tag="0,1" />
+
+            <ImageView
+                android:id="@+id/a3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:tag="0,2" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="1dp">
+
+            <ImageView
+                android:id="@+id/b1"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:tag="1,0" />
+
+            <ImageView
+                android:id="@+id/b2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:tag="1,1" />
+
+            <ImageView
+                android:id="@+id/b3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:tag="1,2" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/c1"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:tag="2,0" />
+
+            <ImageView
+                android:id="@+id/c2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:tag="2,1" />
+
+            <ImageView
+                android:id="@+id/c3"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:tag="2,2" />
+        </TableRow>
+
+    </TableLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
