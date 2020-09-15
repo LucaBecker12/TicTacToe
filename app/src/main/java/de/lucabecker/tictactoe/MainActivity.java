@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -18,7 +19,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<ImageView> mViews = new ArrayList<>();
     private TextView mPlayer1Score;
     private TextView mPlayer2Score;
-    private Button resetGameButton;
     private Game mGame;
 
     @Override
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPlayer1Score = findViewById(R.id.player1Score);
         mPlayer2Score = findViewById(R.id.player2Score);
 
-        resetGameButton = findViewById(R.id.resetGameBtn);
+        Button resetGameButton = findViewById(R.id.resetGameBtn);
         resetGameButton.setOnClickListener(this);
     }
 
@@ -107,13 +107,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             ImageView view = (ImageView) v;
             //Checks whether or not the Tile is empty
-            if (view.getDrawable().getConstantState().equals(getDrawable(R.drawable.tile_empty).getConstantState())) {
+            if (Objects.equals(view.getDrawable().getConstantState(), Objects.requireNonNull(getDrawable(R.drawable.tile_empty)).getConstantState())) {
                 //Check whose turn it is
                 if (mGame.isCrossTurn()) {
                     makeMove(view, R.drawable.tile_cross, Game.CROSS);
                 } else {
                     makeMove(view, R.drawable.tile_circle, Game.CIRCLE);
                 }
+
+                view.setEnabled(false);
 
                 /*Check if a player has won the Game
                 if so, make a Toast and reset the Game, then update the User scores and at last set every tile in the GameBoard to an empty tile
@@ -128,10 +130,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     } else {
                         Toast.makeText(this, "Draw", Toast.LENGTH_SHORT).show();
                     }
-                    changeFieldClickability(false);
+                    disableBoard();
                     updateScore();
                     (new Handler()).postDelayed(this::resetBoard, 1000);
-                    changeFieldClickability(true);
 
                     // If there is no Winner just move on to the next Player
                 } else {
@@ -141,10 +142,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void disableBoard() {
+        for (ImageView view : mViews) {
+            view.setEnabled(false);
+        }
+    }
+
 
     private void resetBoard() {
         for (ImageView view : mViews) {
             view.setImageDrawable(getDrawable(R.drawable.tile_empty));
+            view.setEnabled(true);
         }
         mGame.resetGame();
     }
@@ -162,11 +170,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
-    private void changeFieldClickability(boolean clickable) {
-        for (ImageView view : mViews) {
-            view.setClickable(clickable);
-        }
-
-    }
 }
