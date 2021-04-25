@@ -6,7 +6,7 @@ class Game {
     public static final int CIRCLE = 1;
     public static final int DRAW = 2;
     private boolean mIsCrossTurn;
-    private int[][] mBoard;
+    private final int[][] mBoard;
     private int roundCount;
     private int player1Score;
     private int player2Score;
@@ -145,5 +145,10 @@ class Game {
     public void resetScores() {
         player1Score = 0;
         player2Score = 0;
+    }
+
+    public Move getAIMove() {
+        Move move = Minimax.findBestMove(mBoard);
+        return move;
     }
 }

@@ -2,7 +2,14 @@ package de.lucabecker.tictactoe;
 
 public class Minimax {
 
-    public Move findBestMove(int[][] board) {
+    /**
+     * This method is called by other classes which want to implement the Minimax-Algorithm for TicTacToe.
+     * It returns the best possible move according to the algorithm
+     *
+     * @param board A 2D array of the Tic Tac Toe game
+     * @return An object of the class Move containing the best move
+     */
+    public static Move findBestMove(int[][] board) {
         Move bestMove = new Move();
         int bestVal = 1000;
 
@@ -25,7 +32,7 @@ public class Minimax {
         return bestMove;
     }
 
-    private int minimax(int[][] board, boolean isMax) {
+    private static int minimax(int[][] board, boolean isMax) {
         int score = evaluate(board);
 
         if (Math.abs(score) == 10) {
@@ -73,7 +80,7 @@ public class Minimax {
 
     }
 
-    private int evaluate(int[][] board) {
+    private static int evaluate(int[][] board) {
         for (int i = 0; i < board.length; i++) {
             if (board[i][0] == board[i][1] && board[i][0] == board[i][2]) {
                 if (board[i][0] == Game.CROSS) {
@@ -111,7 +118,7 @@ public class Minimax {
         return 0;
     }
 
-    private Boolean isMovesLeft(int[][] board) {
+    private static boolean isMovesLeft(int[][] board) {
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 if (board[i][j] == Game.EMPTY)

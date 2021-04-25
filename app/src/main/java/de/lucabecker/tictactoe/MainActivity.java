@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,10 +18,12 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ArrayList<ImageView> mViews = new ArrayList<>();
+    private final ArrayList<ImageView> mViews = new ArrayList<>();
     private TextView mPlayer1Score;
     private TextView mPlayer2Score;
+    private TextView mPlayer2TV;
     private Game mGame;
+    private Switch mAI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void initBoard() {
         mGame = new Game();
-        resetBoard();
+        resetGame();
         updateScore();
     }
 
@@ -80,8 +84,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPlayer1Score = findViewById(R.id.player1Score);
         mPlayer2Score = findViewById(R.id.player2Score);
 
+        mPlayer2TV = findViewById(R.id.player2TV);
+
         Button resetGameButton = findViewById(R.id.resetGameBtn);
         resetGameButton.setOnClickListener(this);
+
+        mAI = findViewById(R.id.switchAI);
+        mAI.setOnCheckedChangeListener((CompoundButton.OnCheckedChangeListener) (compoundButton, b) -> {
+            resetGame();
+            updateScore();
+            if (b) {
+                mPlayer2TV.setText("AI:");
+            } else {
+                mPlayer2TV.setText("Player 2:");
+            }
+        });
     }
 
     /**
@@ -100,10 +117,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.resetGameBtn) {
-            mGame.resetGame();
-            resetBoard();
-            mGame.resetScores();
-            updateScore();
+            resetGame();
         } else {
             ImageView view = (ImageView) v;
             //Checks whether or not the Tile is empty
@@ -111,50 +125,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Check whose turn it is
                 if (mGame.isCrossTurn()) {
                     makeMove(view, R.drawable.tile_cross, Game.CROSS);
+
+                    if (mAI.isChecked()) {
+                        Move move = mGame.getAIMove();
+                        int row = move.getRow();
+                        int col = move.getCol();
+
+                        if (row != -1 && col != -1) {
+                            makeMove(mViews.get((3 * row) + col), R.drawable.tile_circle, Game.CIRCLE);
+                        }
+                    }
                 } else {
                     makeMove(view, R.drawable.tile_circle, Game.CIRCLE);
                 }
 
                 view.setEnabled(false);
 
-                /*Check if a player has won the Game
+               /*Check if a player has won the Game
                 if so, make a Toast and reset the Game, then update the User scores and at last set every tile in the GameBoard to an empty tile
                 */
-                if (mGame.checkWin() != Game.EMPTY) {
-                    if (mGame.checkWin() == Game.CROSS) {
+                switch (mGame.checkWin()) {
+                    case Game.CROSS:
                         Toast.makeText(this, "Cross won", Toast.LENGTH_SHORT).show();
                         mGame.addScore(Game.CROSS);
-                    } else if (mGame.checkWin() == Game.CIRCLE) {
-                        mGame.addScore(Game.CIRCLE);
+                        restartGame();
+                        break;
+                    case Game.CIRCLE:
                         Toast.makeText(this, "Circle won", Toast.LENGTH_SHORT).show();
-                    } else {
+                        mGame.addScore(Game.CIRCLE);
+                        restartGame();
+                        break;
+                    case Game.DRAW:
                         Toast.makeText(this, "Draw", Toast.LENGTH_SHORT).show();
-                    }
-                    disableBoard();
-                    updateScore();
-                    (new Handler()).postDelayed(this::resetBoard, 1000);
-
-                    // If there is no Winner just move on to the next Player
-                } else {
-                    mGame.nextPlayer();
+                        restartGame();
+                        break;
+                    default:
+                        if (!mAI.isChecked()) {
+                            mGame.nextPlayer();
+                        }
+                        break;
                 }
             }
         }
     }
 
-    private void disableBoard() {
-        for (ImageView view : mViews) {
-            view.setEnabled(false);
-        }
-    }
 
-
-    private void resetBoard() {
+    private void resetGame() {
         for (ImageView view : mViews) {
             view.setImageDrawable(getDrawable(R.drawable.tile_empty));
             view.setEnabled(true);
         }
         mGame.resetGame();
+        mGame.resetScores();
+        updateScore();
+    }
+
+    private void restartGame() {
+        updateScore();
+        (new Handler()).postDelayed(this::resetGame, 1000);
     }
 
     private void makeMove(ImageView view, int rId, int player) {
